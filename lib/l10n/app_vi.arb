@@ -1,0 +1,52 @@
+{
+  "@@locale": "vi",
+  "appName": "Lịch Việt",
+  "today": "Hôm nay",
+  "dayView": "Ngày",
+  "weekView": "Tuần",
+  "monthView": "Tháng",
+  "yearView": "Năm",
+  "lunarDate": "Âm lịch: {day}/{month}/{year}{leap}",
+  "@lunarDate": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "month": {"type": "int"},
+      "year": {"type": "int"},
+      "leap": {"type": "String"}
+    }
+  },
+  "leapMonthSuffix": " nhuận",
+  "previousMonth": "Tháng trước",
+  "nextMonth": "Tháng sau",
+  "previousPeriod": "Kỳ trước",
+  "nextPeriod": "Kỳ sau",
+  "mondayShort": "T2",
+  "tuesdayShort": "T3",
+  "wednesdayShort": "T4",
+  "thursdayShort": "T5",
+  "fridayShort": "T6",
+  "saturdayShort": "T7",
+  "sundayShort": "CN",
+  "selectedDate": "Ngày {day} tháng {month}, {year}",
+  "@selectedDate": {
+    "placeholders": {
+      "day": {"type": "int"},
+      "month": {"type": "int"},
+      "year": {"type": "int"}
+    }
+  },
+  "solarCalendar": "Dương lịch",
+  "lunarCalendar": "Âm lịch",
+  "leapMonthShort": "Nhuận",
+  "testNotification": "Thử thông báo",
+  "testNotificationTitle": "Thông báo từ Lịch Việt",
+  "testNotificationBody": "Thông báo thử nghiệm đã hoạt động thành công.",
+  "notificationSent": "Đã gửi thông báo thử nghiệm.",
+  "notificationPermissionDenied": "Bạn chưa cấp quyền thông báo.",
+  "notificationUnavailable": "Thiết bị này chưa hỗ trợ thông báo thử nghiệm.",
+  "lunarReminderTitle": "Nhắc lịch âm",
+  "firstDayTomorrowReminder": "Ngày mai là mùng 1 âm lịch.",
+  "firstDayTodayReminder": "Hôm nay là mùng 1 âm lịch.",
+  "fullMoonTomorrowReminder": "Ngày mai là ngày Rằm (15 âm lịch).",
+  "fullMoonTodayReminder": "Hôm nay là ngày Rằm (15 âm lịch)."
+}
