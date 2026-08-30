@@ -297,6 +297,36 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Hôm nay là ngày Rằm (15 âm lịch).'**
   String get fullMoonTodayReminder;
+
+  /// No description provided for @settings.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt'**
+  String get settings;
+
+  /// No description provided for @notifications.
+  ///
+  /// In vi, this message translates to:
+  /// **'THÔNG BÁO'**
+  String get notifications;
+
+  /// No description provided for @lunarReminderSetting.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhắc mùng 1 và ngày Rằm'**
+  String get lunarReminderSetting;
+
+  /// No description provided for @lunarReminderSettingDescription.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thông báo lúc 08:00 vào ngày trước và đúng ngày âm lịch.'**
+  String get lunarReminderSettingDescription;
+
+  /// No description provided for @notificationSystemPermissionHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn có thể thu hồi quyền thông báo hoàn toàn trong phần Cài đặt của thiết bị.'**
+  String get notificationSystemPermissionHint;
 }
 
 class _AppLocalizationsDelegate

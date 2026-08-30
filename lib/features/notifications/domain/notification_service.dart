@@ -25,6 +25,8 @@ abstract interface class NotificationService {
   Future<NotificationDeliveryResult> replaceScheduledNotifications(
     List<ScheduledNotification> notifications,
   );
+
+  Future<void> cancelLunarReminders();
 }
 
 final class UnavailableNotificationService implements NotificationService {
@@ -43,4 +45,7 @@ final class UnavailableNotificationService implements NotificationService {
   Future<NotificationDeliveryResult> replaceScheduledNotifications(
     List<ScheduledNotification> notifications,
   ) async => NotificationDeliveryResult.unavailable;
+
+  @override
+  Future<void> cancelLunarReminders() async {}
 }

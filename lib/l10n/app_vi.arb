@@ -48,5 +48,10 @@
   "firstDayTomorrowReminder": "Ngày mai là mùng 1 âm lịch.",
   "firstDayTodayReminder": "Hôm nay là mùng 1 âm lịch.",
   "fullMoonTomorrowReminder": "Ngày mai là ngày Rằm (15 âm lịch).",
-  "fullMoonTodayReminder": "Hôm nay là ngày Rằm (15 âm lịch)."
+  "fullMoonTodayReminder": "Hôm nay là ngày Rằm (15 âm lịch).",
+  "settings": "Cài đặt",
+  "notifications": "THÔNG BÁO",
+  "lunarReminderSetting": "Nhắc mùng 1 và ngày Rằm",
+  "lunarReminderSettingDescription": "Thông báo lúc 08:00 vào ngày trước và đúng ngày âm lịch.",
+  "notificationSystemPermissionHint": "Bạn có thể thu hồi quyền thông báo hoàn toàn trong phần Cài đặt của thiết bị."
 }

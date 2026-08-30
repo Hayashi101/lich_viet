@@ -115,4 +115,21 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get fullMoonTodayReminder => 'Hôm nay là ngày Rằm (15 âm lịch).';
+
+  @override
+  String get settings => 'Cài đặt';
+
+  @override
+  String get notifications => 'THÔNG BÁO';
+
+  @override
+  String get lunarReminderSetting => 'Nhắc mùng 1 và ngày Rằm';
+
+  @override
+  String get lunarReminderSettingDescription =>
+      'Thông báo lúc 08:00 vào ngày trước và đúng ngày âm lịch.';
+
+  @override
+  String get notificationSystemPermissionHint =>
+      'Bạn có thể thu hồi quyền thông báo hoàn toàn trong phần Cài đặt của thiết bị.';
 }

@@ -20,6 +20,9 @@ final class _RecordingNotificationService implements NotificationService {
   Future<void> initialize() async {}
 
   @override
+  Future<void> cancelLunarReminders() async {}
+
+  @override
   Future<NotificationDeliveryResult> replaceScheduledNotifications(
     List<ScheduledNotification> notifications,
   ) async {

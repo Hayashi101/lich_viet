@@ -60,8 +60,9 @@ lib/
       widgets/calendar_cell.dart
   features/notifications/
     domain/                      # NotificationService contract
-    application/                 # Lập lịch nhắc mùng 1/Rằm
-    data/                        # flutter_local_notifications adapter
+    application/                 # Lập lịch + state cài đặt thông báo
+    data/                        # Plugin thông báo + SharedPreferences adapter
+    presentation/                # Trang Cài đặt
 ```
 
 Test phản chiếu cấu trúc `lib` trong `test/`; test fixture dùng chung đặt trong `test/support`.
@@ -86,7 +87,9 @@ State màn hình tối thiểu gồm `selectedDate`, `visibleAnchor`, `view` và
 
 Không cần database cho MVP. Chỉ lưu tùy chọn nhẹ như chế độ xem gần nhất/theme khi yêu cầu sản phẩm được chốt.
 
-Thông báo cục bộ nằm trong feature `notifications`, không gọi plugin trực tiếp từ widget. Khi mở ứng dụng, scheduler tạo lại lịch nhắc trong 370 ngày tiếp theo lúc 08:00 theo `Asia/Ho_Chi_Minh`: một thông báo vào ngày trước và một thông báo đúng ngày mùng 1/Rằm. Android dùng lịch không chính xác tuyệt đối (`inexactAllowWhileIdle`) để không yêu cầu quyền báo thức chính xác; hệ điều hành có thể giao thông báo trễ nhẹ để tối ưu pin.
+Thông báo cục bộ nằm trong feature `notifications`, không gọi plugin trực tiếp từ widget. Người dùng chủ động bật/tắt lịch nhắc trong trang Cài đặt; lựa chọn được lưu bằng `NotificationPreferenceRepository`. Khi bật hoặc khi mở lại ứng dụng với lựa chọn đang bật, scheduler tạo lại lịch nhắc trong 370 ngày tiếp theo lúc 08:00 theo `Asia/Ho_Chi_Minh`: một thông báo vào ngày trước và một thông báo đúng ngày mùng 1/Rằm. Khi tắt, toàn bộ lịch nhắc của ứng dụng được hủy. Android dùng lịch không chính xác tuyệt đối (`inexactAllowWhileIdle`) để không yêu cầu quyền báo thức chính xác; hệ điều hành có thể giao thông báo trễ nhẹ để tối ưu pin.
+
+`NotificationSettingsController` cập nhật trạng thái công tắc theo hướng optimistic và phát trạng thái đang xử lý trước khi gọi native API. Scheduler nhường frame định kỳ trong lúc quét ngày để không làm khựng animation; nếu quyền bị từ chối hoặc nền tảng không hỗ trợ, controller trả công tắc về trạng thái tắt.
 
 ## 6. Chiến lược kiểm thử
 

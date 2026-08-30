@@ -31,12 +31,17 @@ final class LunarReminderScheduler {
   final LunarCalendarRepository _lunarCalendar;
   final Clock _clock;
 
-  Future<NotificationDeliveryResult> schedule(LunarReminderMessages messages) {
+  Future<NotificationDeliveryResult> schedule(
+    LunarReminderMessages messages,
+  ) async {
     final now = _clock.now();
     final today = DateTime(now.year, now.month, now.day);
     final notifications = <ScheduledNotification>[];
 
     for (var offset = 0; offset <= _scheduleDays; offset++) {
+      if (offset > 0 && offset % 30 == 0) {
+        await Future<void>.delayed(Duration.zero);
+      }
       final eventDate = today.add(Duration(days: offset));
       final lunar = _lunarCalendar.fromSolar(eventDate);
       if (lunar.day != 1 && lunar.day != 15) continue;

@@ -8,6 +8,9 @@ import '../../domain/repositories/lunar_calendar_repository.dart';
 import '../../domain/value_objects/calendar_view.dart';
 import '../../../notifications/domain/notification_service.dart';
 import '../../../notifications/application/lunar_reminder_scheduler.dart';
+import '../../../notifications/application/notification_settings_controller.dart';
+import '../../../notifications/domain/notification_preference_repository.dart';
+import '../../../notifications/presentation/pages/settings_page.dart';
 import '../widgets/day_view.dart';
 import '../widgets/month_view.dart';
 import '../widgets/week_view.dart';
@@ -18,15 +21,19 @@ class CalendarPage extends StatefulWidget {
     required this.controller,
     required this.lunarCalendar,
     required this.notificationService,
-    this.lunarReminderScheduler,
+    required this.lunarReminderScheduler,
     this.showTestNotificationButton = false,
+    required this.notificationPreferences,
+    required this.lunarRemindersEnabled,
     super.key,
   });
   final CalendarController controller;
   final LunarCalendarRepository lunarCalendar;
   final NotificationService notificationService;
-  final LunarReminderScheduler? lunarReminderScheduler;
+  final LunarReminderScheduler lunarReminderScheduler;
   final bool showTestNotificationButton;
+  final NotificationPreferenceRepository notificationPreferences;
+  final bool lunarRemindersEnabled;
 
   @override
   State<CalendarPage> createState() => _CalendarPageState();
@@ -36,22 +43,48 @@ class _CalendarPageState extends State<CalendarPage> {
   static const _minimumSwipeVelocity = 250.0;
   int _navigationDirection = 1;
   bool _didScheduleLunarReminders = false;
+  late bool _lunarRemindersEnabled;
+
+  @override
+  void initState() {
+    super.initState();
+    _lunarRemindersEnabled = widget.lunarRemindersEnabled;
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_didScheduleLunarReminders || widget.lunarReminderScheduler == null) {
+    if (_didScheduleLunarReminders || !_lunarRemindersEnabled) {
       return;
     }
     _didScheduleLunarReminders = true;
     final strings = AppLocalizations.of(context);
-    widget.lunarReminderScheduler!.schedule(
+    widget.lunarReminderScheduler.schedule(
       LunarReminderMessages(
         title: strings.lunarReminderTitle,
         firstDayTomorrow: strings.firstDayTomorrowReminder,
         firstDayToday: strings.firstDayTodayReminder,
         fullMoonTomorrow: strings.fullMoonTomorrowReminder,
         fullMoonToday: strings.fullMoonTodayReminder,
+      ),
+    );
+  }
+
+  Future<void> _openSettings() async {
+    final controller = NotificationSettingsController(
+      _lunarRemindersEnabled,
+      widget.notificationPreferences,
+      widget.notificationService,
+      widget.lunarReminderScheduler,
+    );
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (context) => SettingsPage(
+          controller: controller,
+          onReminderChanged: (enabled) {
+            if (mounted) setState(() => _lunarRemindersEnabled = enabled);
+          },
+        ),
       ),
     );
   }
@@ -116,11 +149,13 @@ class _CalendarPageState extends State<CalendarPage> {
                                 fontWeight: FontWeight.w700,
                               ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          _periodTitle(context),
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
+                        if (state.view != CalendarView.day) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            _periodTitle(context),
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                        ],
                       ],
                     ),
                   ),
@@ -133,6 +168,13 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                     const SizedBox(width: 8),
                   ],
+                  IconButton(
+                    key: const ValueKey('settings-button'),
+                    tooltip: strings.settings,
+                    onPressed: _openSettings,
+                    icon: const Icon(Icons.settings_outlined),
+                  ),
+                  const SizedBox(width: 4),
                   FilledButton.tonal(
                     onPressed: () => _update(widget.controller.goToToday),
                     child: Text(
@@ -157,29 +199,30 @@ class _CalendarPageState extends State<CalendarPage> {
               onSelected: (view) =>
                   _update(() => widget.controller.changeView(view)),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  IconButton(
-                    tooltip: strings.previousPeriod,
-                    onPressed: () => _movePeriod(-1),
-                    icon: const Icon(Icons.chevron_left),
-                  ),
-                  const Spacer(),
-                  Text(
-                    _periodTitle(context),
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const Spacer(),
-                  IconButton(
-                    tooltip: strings.nextPeriod,
-                    onPressed: () => _movePeriod(1),
-                    icon: const Icon(Icons.chevron_right),
-                  ),
-                ],
+            if (state.view != CalendarView.day)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  children: [
+                    IconButton(
+                      tooltip: strings.previousPeriod,
+                      onPressed: () => _movePeriod(-1),
+                      icon: const Icon(Icons.chevron_left),
+                    ),
+                    const Spacer(),
+                    Text(
+                      _periodTitle(context),
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      tooltip: strings.nextPeriod,
+                      onPressed: () => _movePeriod(1),
+                      icon: const Icon(Icons.chevron_right),
+                    ),
+                  ],
+                ),
               ),
-            ),
             Expanded(
               child: ClipRect(
                 child: ColoredBox(

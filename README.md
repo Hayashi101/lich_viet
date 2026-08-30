@@ -9,6 +9,7 @@
 - Vuốt trái/phải để chuyển ngày, tuần, tháng hoặc năm.
 - Đánh dấu ngày hiện tại và ngày đang chọn.
 - Thông báo vào ngày trước và đúng ngày mùng 1/Rằm âm lịch.
+- Trang Cài đặt cho phép chủ động bật/tắt thông báo âm lịch.
 - Giao diện Material 3, hỗ trợ light/dark theme và text scaling.
 
 ## Thông báo âm lịch
@@ -21,6 +22,8 @@
 - 08:00 đúng ngày Rằm.
 
 Thời gian được tính theo múi giờ `Asia/Ho_Chi_Minh`. Android dùng lịch nhắc không chính xác tuyệt đối để tối ưu pin, vì vậy hệ điều hành có thể giao thông báo trễ nhẹ.
+
+Thông báo mặc định tắt nếu người dùng chưa từng lựa chọn. Khi bật trong trang Cài đặt, ứng dụng mới xin quyền hệ điều hành và tạo lịch nhắc. Khi tắt, các lịch nhắc đang chờ được hủy; quyền hệ điều hành có thể được thu hồi riêng trong Cài đặt của thiết bị.
 
 ## Kiến trúc
 
@@ -63,7 +66,7 @@ flutter devices
 flutter run -d <device-id>
 ```
 
-Ứng dụng sẽ yêu cầu quyền thông báo khi khởi động lần đầu.
+Ứng dụng chỉ yêu cầu quyền thông báo khi người dùng chủ động bật tính năng trong trang Cài đặt.
 
 ## Kiểm tra chất lượng
 

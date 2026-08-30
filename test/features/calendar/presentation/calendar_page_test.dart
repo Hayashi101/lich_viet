@@ -4,6 +4,7 @@ import 'package:lich_viet/app/theme/app_theme.dart';
 import 'package:lich_viet/core/date_time/clock.dart';
 import 'package:lich_viet/features/calendar/presentation/widgets/month_view.dart';
 import 'package:lich_viet/features/notifications/domain/notification_service.dart';
+import 'package:lich_viet/features/notifications/domain/notification_preference_repository.dart';
 import 'package:lich_viet/main.dart';
 
 final class _FixedClock implements Clock {
@@ -16,9 +17,13 @@ final class _FixedClock implements Clock {
 final class _FakeNotificationService implements NotificationService {
   NotificationDeliveryResult result = NotificationDeliveryResult.sent;
   int showCalls = 0;
+  int cancelCalls = 0;
 
   @override
   Future<void> initialize() async {}
+
+  @override
+  Future<void> cancelLunarReminders() async => cancelCalls += 1;
 
   @override
   Future<NotificationDeliveryResult> showTestNotification({
@@ -33,6 +38,19 @@ final class _FakeNotificationService implements NotificationService {
   Future<NotificationDeliveryResult> replaceScheduledNotifications(
     List<ScheduledNotification> notifications,
   ) async => result;
+}
+
+final class _FakeNotificationPreferences
+    implements NotificationPreferenceRepository {
+  bool enabled = false;
+
+  @override
+  Future<bool> isLunarReminderEnabled() async => enabled;
+
+  @override
+  Future<void> setLunarReminderEnabled(bool enabled) async {
+    this.enabled = enabled;
+  }
 }
 
 void main() {
@@ -151,6 +169,34 @@ void main() {
     expect(find.byKey(const ValueKey('year-month-1')), findsOneWidget);
   });
 
+  testWidgets('day view shows the full date only in the solar section', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      CalendarApp(clock: _FixedClock(DateTime(2024, 2, 10))),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Ngày').first);
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.chevron_left), findsNothing);
+    expect(find.byIcon(Icons.chevron_right), findsNothing);
+    expect(find.text('Thứ Bảy, 10 tháng 2, 2024'), findsOneWidget);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('solar-day-section')),
+        matching: find.text('Thứ Bảy, 10 tháng 2, 2024'),
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Tuần').first);
+    await tester.pumpAndSettle();
+    expect(find.byIcon(Icons.chevron_left), findsOneWidget);
+    expect(find.byIcon(Icons.chevron_right), findsOneWidget);
+  });
+
   testWidgets('horizontal swipes navigate all calendar periods', (
     tester,
   ) async {
@@ -237,5 +283,33 @@ void main() {
 
     expect(notifications.showCalls, 1);
     expect(find.text('Bạn chưa cấp quyền thông báo.'), findsOneWidget);
+  });
+
+  testWidgets('settings page enables lunar reminders explicitly', (
+    tester,
+  ) async {
+    final notifications = _FakeNotificationService();
+    final preferences = _FakeNotificationPreferences();
+    await tester.pumpWidget(
+      CalendarApp(
+        clock: _FixedClock(DateTime(2024, 2, 8, 7)),
+        notificationService: notifications,
+        notificationPreferences: preferences,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const ValueKey('settings-button')));
+    await tester.pumpAndSettle();
+    expect(find.text('Cài đặt'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('lunar-reminder-switch')));
+    await tester.pumpAndSettle();
+
+    expect(preferences.enabled, isTrue);
+    final toggle = tester.widget<SwitchListTile>(
+      find.byKey(const ValueKey('lunar-reminder-switch')),
+    );
+    expect(toggle.value, isTrue);
   });
 }

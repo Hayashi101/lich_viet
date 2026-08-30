@@ -46,12 +46,7 @@ final class LocalNotificationService implements NotificationService {
     final hasPermission = await _requestPermission();
     if (!hasPermission) return NotificationDeliveryResult.permissionDenied;
 
-    final pending = await _plugin.pendingNotificationRequests();
-    for (final notification in pending) {
-      if (notification.id >= 20000000 && notification.id < 70000000) {
-        await _plugin.cancel(id: notification.id);
-      }
-    }
+    await cancelLunarReminders();
 
     for (final notification in notifications) {
       final at = notification.scheduledAt;
@@ -85,6 +80,17 @@ final class LocalNotificationService implements NotificationService {
       );
     }
     return NotificationDeliveryResult.sent;
+  }
+
+  @override
+  Future<void> cancelLunarReminders() async {
+    await initialize();
+    final pending = await _plugin.pendingNotificationRequests();
+    for (final notification in pending) {
+      if (notification.id >= 20000000 && notification.id < 70000000) {
+        await _plugin.cancel(id: notification.id);
+      }
+    }
   }
 
   @override
