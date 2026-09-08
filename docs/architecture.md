@@ -91,6 +91,8 @@ Thông báo cục bộ nằm trong feature `notifications`, không gọi plugin 
 
 `NotificationSettingsController` cập nhật trạng thái công tắc theo hướng optimistic và phát trạng thái đang xử lý trước khi gọi native API. Scheduler nhường frame định kỳ trong lúc quét ngày để không làm khựng animation; nếu quyền bị từ chối hoặc nền tảng không hỗ trợ, controller trả công tắc về trạng thái tắt.
 
+Icon trạng thái Android `@drawable/ic_stat_calendar` được plugin tra cứu động theo tên. Quy tắc tại `android/app/src/main/res/raw/keep.xml` phải được giữ để resource shrinker không loại icon khỏi APK release.
+
 ## 6. Chiến lược kiểm thử
 
 - **Unit test:** chuẩn hóa ngày, biên tuần/tháng/năm, chuyển view, thuật toán âm lịch.
